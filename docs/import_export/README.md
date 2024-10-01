@@ -4,40 +4,54 @@
 
 The Import/Export tool in uPortal 5 allows users to transfer configuration data and settings between instances, facilitating data migration and backup.
 
-## Supported Operations
+## Data tasks
 
-- **IMPORT**: Adds or updates entities from XML files in the portal database.
-- **LIST**: Lists supported data types and existing entities.
-- **EXPORT**: Creates XML files of specified entities and saves them to a location.
-- **DELETE**: Removes specified entities and their dependencies from the portal database.
+- **dataImport**: Adds to or updates the portal database for the entities defined in the specified XML file(s). Requires -Dfile={path-to-file} or -Ddir={path-to-directory}
+
+- **dataList**: With no arguments (-Dtype={entity-type}) lists all supported portal data types and the operations (export, delete) supported for each.
+
+- **dataExport**: Creates XML files representing the requested entities and writes them to the specified file system location. Parameters: -Ddir={path-to-directory} -Dtype={entity-type} [-Dsysid={entity-identifier}]
+
+- **dataDelete**: Deletes the specified entity. Requires -Dtype={entity-type} and -Dsysid={id}
+
+- **dataInit**: Drop and recreate uPortal tables and reimport data
+
+
+## Running Tasks via Gradle
+To run the Import/Export tool via Gradle, navigate to the uPortal project directory and execute
+
+```bash
+./gradlew :overlays:uPortal:<task-name> -D<options>
+
+```
 
 ## Importing Data
 
 ### Import Multiple Files
 
 ```bash
-./gradlew importData -Ddir={path-to-directory} [-Dpattern={ant-pattern}]
+./gradlew :overlays:uPortal:dataImport -Ddir={path-to-directory} [-Dpattern={ant-pattern}]
 
 ```
 
 ### Import Single File
 
 ```bash
-./gradlew importData -Dfile={path-to-file}
+./gradlew :overlays:uPortal:dataImport -Dfile={path-to-file}
 
 ```
 
 ### Import Single File (uPortal 4.3+)
 
 ```bash
-./gradlew importData -Dfiles={comma-separated-list-of-files}
+./gradlew :overlays:uPortal:dataImport -Dfiles={comma-separated-list-of-files}
 
 ```
 
 ### Import List File (uPortal 4.3+)
 
 ```bash
-./gradlew importData -DfilesListFile={path-to-file}
+./gradlew :overlays:uPortal:dataImport -DfilesListFile={path-to-file}
 
 ```
 
@@ -46,14 +60,14 @@ The Import/Export tool in uPortal 5 allows users to transfer configuration data 
 ### List Types
 
 ```bash
-./gradlew listData
+./gradlew :overlays:uPortal:dataList
 
 ```
 
 ### List Data of a Specific Type
 
 ```bash
-./gradlew listData -Dtype={entity-type}
+./gradlew :overlays:uPortal:dataList -Dtype={entity-type}
 
 ```
 
@@ -61,7 +75,7 @@ The Import/Export tool in uPortal 5 allows users to transfer configuration data 
 ## Exporting Data
 
 ```bash
-./gradlew exportData -Ddir={path-to-directory} -Dtype={entity-type} [-Dsysid={entity-identifier}]
+./gradlew :overlays:uPortal:dataExport -Ddir={path-to-directory} -Dtype={entity-type} [-Dsysid={entity-identifier}]
 
 ```
 
@@ -69,10 +83,16 @@ The Import/Export tool in uPortal 5 allows users to transfer configuration data 
 ## Deleting Data
 
 ```bash
-./gradlew deleteData -Dtype={entity-type} [-Dsysid={entity-identifier}]
+./gradlew :overlays:uPortal:dataDelete -Dtype={entity-type} [-Dsysid={entity-identifier}]
 
 ```
 
+## Reinitializing Data (Drop & Recreate Tables)
+
+```bash
+./gradlew :overlays:uPortal:dataInit
+
+```
 
 ## Import/Export Logs
 
